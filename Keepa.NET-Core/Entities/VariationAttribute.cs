@@ -1,0 +1,10 @@
+﻿namespace Keepa.NET_Core.Entities
+{
+    public class VariationAttribute
+    {
+        /** dimension type, e.g. Color **/
+        public string Dimension { get; set; }
+        /** dimension value, e.g. Red **/
+        public string Value { get; set; }
+    }
+}
