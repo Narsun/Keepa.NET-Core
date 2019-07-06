@@ -204,7 +204,7 @@ namespace Keepa.NET_Core.Entities
         public Promotion[] Promotions { get; set; }
 
         [JsonProperty("stats")]
-        public Statistics Statistics { get; set; }
+        public Statistics Stats { get; set; }
 
         [JsonProperty("offers")]
         public MarketplaceOffer[] Offers { get; set; }
@@ -219,7 +219,7 @@ namespace Keepa.NET_Core.Entities
         public bool IsRedirectAsin { get; set; }
 
         [JsonProperty("isSNS")]
-        public bool IsSms { get; set; }
+        public bool IsSns { get; set; }
 
         [JsonProperty("offersSuccessful")]
         public bool OffersSuccessful { get; set; }
