@@ -23,16 +23,16 @@ namespace Keepa.NET_Core.Entities
         public int[] AtIntervalStart { get; set; }
 
         [JsonProperty("min")]
-        public int[,] Min { get; set; }
+        public int[][] Min { get; set; }
 
         [JsonProperty("max")]
-        public int[,] Max { get; set; }
+        public int[][] Max { get; set; }
 
         [JsonProperty("minInInterval")]
-        public int[,] MinInInterval { get; set; }
+        public int[][] MinInInterval { get; set; }
 
         [JsonProperty("maxInInterval")]
-        public int[,] MaxInInterval { get; set; }
+        public int[][] MaxInInterval { get; set; }
 
         [JsonProperty("outOfStockPercentageInInterval")]
         public int[] OutOfStockPercentageInInterval { get; set; }

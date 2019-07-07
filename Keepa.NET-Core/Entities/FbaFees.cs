@@ -2,9 +2,9 @@
 {
     public class FbaFees
     {
-        public int StorageFee;
-        public int StorageFeeTax;
-        public int PickAndPackFee;
-        public int PickAndPackFeeTax;
+        public int StorageFee { get; set; }
+        public int StorageFeeTax { get; set; }
+        public int PickAndPackFee { get; set; }
+        public int PickAndPackFeeTax { get; set; }
     }
 }

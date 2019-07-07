@@ -225,6 +225,6 @@ namespace Keepa.NET_Core.Entities
         public bool OffersSuccessful { get; set; }
 
         [JsonProperty("csv")]
-        public int[,] Csv { get; set; }
+        public int[][] Csv { get; set; }
     }
 }

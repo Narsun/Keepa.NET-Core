@@ -2,6 +2,7 @@
 using Keepa.NET_Core.Responses;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Collections.Generic;
 
 namespace Keepa.NET_Core
 {
@@ -9,40 +10,55 @@ namespace Keepa.NET_Core
     {
         private readonly RestClient _restClient;
 
-        private readonly string _apiEndpoint = "https://api.keepa.com/";
-
-        private readonly string _privateKey;
+        private readonly string _apiUrl = "https://api.keepa.com/";
 
         public KeepaClient(string privateKey)
         {
-            _privateKey = privateKey;
-
-            _restClient = new RestClient();
+            _restClient = new RestClient(_apiUrl);
+            _restClient.AddDefaultQueryParameter("key", privateKey);
         }
+
+
+        public SellerInfoResponse GetSellerInfo(SellerInfoRequest sellerInfo)
+        {
+            RestRequest request = new RestRequest("seller", Method.POST, DataFormat.Json);
+
+            request.AddQueryParameter("domain", sellerInfo.DomainId);
+            request.AddQueryParameter("seller", sellerInfo.SellerId);
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<SellerInfoResponse>(response.Content);
+        }
+
 
         public DealResponse GetDeals(DealRequest deal)
         {
-            IRestResponse response = ExecuteRequest("deal", deal);
+            RestRequest request = new RestRequest("deal", Method.POST, DataFormat.Json);
 
-            return DeserializeResponseContent<DealResponse>(response.Content);
+            request.AddJsonBody(JsonConvert.SerializeObject(deal));
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<DealResponse>(response.Content);
         }
 
-        public T DeserializeResponseContent<T>(string content)
+
+        public RetrieveTokenStatusResponse GetTokenStatus()
         {
-            return JsonConvert.DeserializeObject<T>(content);
+            RestRequest request = new RestRequest("token", Method.POST, DataFormat.Json);
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<RetrieveTokenStatusResponse>(response.Content);
         }
 
-        public IRestResponse ExecuteRequest<T>(string resource, T obj)
-        {
-            RestRequest restRequest = new RestRequest(resource)
-            {
-                RequestFormat = DataFormat.Json,
-                Method = Method.POST
-            };
-            restRequest.AddQueryParameter("key", _privateKey);
 
-            restRequest.AddJsonBody(JsonConvert.SerializeObject(obj));
-            return _restClient.Execute(restRequest);
+
+
+        private IRestResponse ExecuteRequest(RestRequest request)
+        {
+            return _restClient.Execute(request);
         }
     }
 }

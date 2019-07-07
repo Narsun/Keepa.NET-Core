@@ -7,7 +7,7 @@ namespace Keepa.NET_Core.Entities
         [JsonProperty("domainId")]
         public int DomainId { get; set; }
 
-        [JsonProperty("trackingSince")]
+        [JsonProperty("trackedSince")]
         public int TrackingSince { get; set; }
 
         [JsonProperty("lastUpdate")]
@@ -29,7 +29,7 @@ namespace Keepa.NET_Core.Entities
         public int[] TotalScoreFrontAsins { get; set; }
 
         [JsonProperty("csv")]
-        public int[,] Csv { get; set; }
+        public int[][] Csv { get; set; }
 
         [JsonProperty("asinList")]
         public string[] AsinList { get; set; }

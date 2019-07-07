@@ -1,4 +1,4 @@
-﻿using Keepa.NET.Entities;
+﻿using Keepa.NET_Core.Dto;
 using Newtonsoft.Json;
 
 namespace Keepa.NET_Core.Responses
