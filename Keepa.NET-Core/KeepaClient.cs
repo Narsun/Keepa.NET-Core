@@ -2,7 +2,6 @@
 using Keepa.NET_Core.Responses;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Collections.Generic;
 
 namespace Keepa.NET_Core
 {
@@ -19,6 +18,62 @@ namespace Keepa.NET_Core
         }
 
 
+        public MostRatedSellersResponse FetchMostRatedSellers(MostRatedSellersRequest mostRatedSellersRequest)
+        {
+            RestRequest request = new RestRequest("topseller", Method.POST, DataFormat.Json);
+
+            request.AddQueryParameter("domain", mostRatedSellersRequest.DomainId);
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<MostRatedSellersResponse>(response.Content);
+        }
+
+        public ProductResponse FetchProduct(ProductRequest productRequest)
+        {
+            RestRequest request = new RestRequest("product", Method.POST, DataFormat.Json);
+
+            request.AddQueryParameter("domain", productRequest.DomainId);
+
+            if (productRequest.Asin != null)
+            {
+                request.AddQueryParameter("asin", productRequest.Asin);
+            }
+            if (productRequest.Code != null)
+            {
+                request.AddQueryParameter("code", productRequest.Code);
+            }
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<ProductResponse>(response.Content);
+        }
+
+        public ProductResponse ProductSearch(SearchRequest searchRequest)
+        {
+            RestRequest request = new RestRequest("search", Method.POST, DataFormat.Json);
+
+            request.AddQueryParameter("domain", searchRequest.DomainId);
+            request.AddQueryParameter("type", searchRequest.Type);
+            request.AddQueryParameter("term", searchRequest.Term);
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<ProductResponse>(response.Content);
+        }
+
+        public CategoryResponse CategorySearch(SearchRequest searchRequest)
+        {
+            RestRequest request = new RestRequest("search", Method.POST, DataFormat.Json);
+
+            request.AddQueryParameter("domain", searchRequest.DomainId);
+            request.AddQueryParameter("type", searchRequest.Type);
+            request.AddQueryParameter("term", searchRequest.Term);
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<CategoryResponse>(response.Content);
+        }
 
         public CategoryResponse CategoryLookup(CategoryLookupRequest categoryLookup)
         {

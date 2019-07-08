@@ -2,11 +2,15 @@
 {
     public enum PromotionType
     {
-        Standard = 0,
-        Downloadable = 1,
-        Ebook = 2,
-        Inaccessible = 3,
-        Invalid = 4,
-        VariationParent = 5
+        BuyAmountXGetAmountOffX = 0,
+        BuyAmountXGetPercentOffX = 1,
+        BuyAmountXGetSimpleShippingFreeX = 2,
+        BuyQuantityXGetAmountOffX = 3,
+        BuyQuantityXGetPercentOffX = 4,
+        BuyQuantityXGetQuantityFreeX = 5,
+        ForEachQuantityXGetAmountOffX = 6,
+        DiscountCheapestNofM = 7,
+        BuyQuantityXGetQuantityFreeGiftCard = 8,
+        BuyQuantityXGetSimpleShippingFreeX = 9
     }
 }

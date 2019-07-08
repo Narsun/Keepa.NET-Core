@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace Keepa.NET_Core.Entities
 {
@@ -39,7 +38,7 @@ namespace Keepa.NET_Core.Entities
         public string ImageCsv { get; set; }
 
         [JsonProperty("rootCategory")]
-        public int RootCategory { get; set; }
+        public long RootCategory { get; set; }
 
         [JsonProperty("categories")]
         public long[] Categories { get; set; }
@@ -111,7 +110,7 @@ namespace Keepa.NET_Core.Entities
         public int ReleaseDate { get; set; }
 
         [JsonProperty("languages")]
-        public string[,] Languages { get; set; }
+        public string[][] Languages { get; set; }
 
         [JsonProperty("studio")]
         public string Studio { get; set; }
@@ -142,10 +141,10 @@ namespace Keepa.NET_Core.Entities
 
         [JsonProperty("description")]
         public string Description { get; set; }
-
+        /* unused. bad doc (int cannot be null). no data to compare.
         [JsonProperty("hazardousMaterialType")]
-        public int HazardousMaterialType { get; set; }
-
+        public object HazardousMaterialType { get; set; }
+        */
         [JsonProperty("packageHeight")]
         public int PackageHeight { get; set; }
 
