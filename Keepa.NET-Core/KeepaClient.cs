@@ -17,6 +17,29 @@ namespace Keepa.NET_Core
             _restClient.AddDefaultQueryParameter("key", privateKey);
         }
 
+        public ProductFindResponse FindProduct(ProductFindRequest findProduct)
+        {
+            RestRequest request = new RestRequest("query", Method.POST, DataFormat.Json);
+
+            request.AddJsonBody(JsonConvert.SerializeObject(findProduct));
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<ProductFindResponse>(response.Content);
+        }
+
+        public BestSellersResponse FetchBestSellers(BestSellersRequest bestSellers)
+        {
+            RestRequest request = new RestRequest("bestsellers", Method.POST, DataFormat.Json);
+
+            request.AddQueryParameter("domain", bestSellers.DomainId);
+            request.AddQueryParameter("category", bestSellers.CategoryId);
+            request.AddQueryParameter("range", bestSellers.Range);
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<BestSellersResponse>(response.Content);
+        }
 
         public MostRatedSellersResponse FetchMostRatedSellers(MostRatedSellersRequest mostRatedSellersRequest)
         {

@@ -2,7 +2,7 @@
 
 namespace Keepa.NET_Core.Entities
 {
-    public class BestSellers
+    public class BestSeller
     {
         [JsonProperty("domainId")]
         public int DomainId { get; set; }
