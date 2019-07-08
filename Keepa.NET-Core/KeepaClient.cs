@@ -19,7 +19,21 @@ namespace Keepa.NET_Core
         }
 
 
-        public SellerInfoResponse GetSellerInfo(SellerInfoRequest sellerInfo)
+
+        public CategoryResponse CategoryLookup(CategoryLookupRequest categoryLookup)
+        {
+            RestRequest request = new RestRequest("category", Method.POST, DataFormat.Json);
+
+            request.AddQueryParameter("domain", categoryLookup.DomainId);
+            request.AddQueryParameter("category", categoryLookup.CategoryId);
+            request.AddQueryParameter("parents", categoryLookup.IncludeParents);
+
+            var response = ExecuteRequest(request);
+
+            return JsonConvert.DeserializeObject<CategoryResponse>(response.Content);
+        }
+
+        public SellerInfoResponse FetchSellerInfo(SellerInfoRequest sellerInfo)
         {
             RestRequest request = new RestRequest("seller", Method.POST, DataFormat.Json);
 
@@ -31,8 +45,7 @@ namespace Keepa.NET_Core
             return JsonConvert.DeserializeObject<SellerInfoResponse>(response.Content);
         }
 
-
-        public DealResponse GetDeals(DealRequest deal)
+        public DealResponse FetchDeals(DealRequest deal)
         {
             RestRequest request = new RestRequest("deal", Method.POST, DataFormat.Json);
 
@@ -43,8 +56,7 @@ namespace Keepa.NET_Core
             return JsonConvert.DeserializeObject<DealResponse>(response.Content);
         }
 
-
-        public RetrieveTokenStatusResponse GetTokenStatus()
+        public RetrieveTokenStatusResponse FetchTokenStatus()
         {
             RestRequest request = new RestRequest("token", Method.POST, DataFormat.Json);
 
@@ -52,9 +64,6 @@ namespace Keepa.NET_Core
 
             return JsonConvert.DeserializeObject<RetrieveTokenStatusResponse>(response.Content);
         }
-
-
-
 
         private IRestResponse ExecuteRequest(RestRequest request)
         {
