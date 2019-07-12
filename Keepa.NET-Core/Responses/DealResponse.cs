@@ -6,6 +6,6 @@ namespace Keepa.NET_Core.Responses
     public class DealResponse : ResponseBase
     {
         [JsonProperty("deals")]
-        public DealsDto Deals { get; set; }
+        public DealsDto Content { get; set; }
     }
 }

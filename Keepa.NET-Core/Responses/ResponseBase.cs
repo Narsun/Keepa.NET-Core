@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Keepa.NET_Core.Entities;
+using Newtonsoft.Json;
 
 namespace Keepa.NET_Core.Responses
 {
@@ -24,5 +25,8 @@ namespace Keepa.NET_Core.Responses
 
         [JsonProperty("processingTimeInMs")]
         public int ProcessingTimeInMs { get; set; }
+
+        [JsonProperty("error")]
+        public Error Error { get; set; }
     }
 }

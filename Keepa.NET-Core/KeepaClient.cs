@@ -1,4 +1,5 @@
-﻿using Keepa.NET_Core.Requests;
+﻿using Keepa.NET_Core.Exceptions;
+using Keepa.NET_Core.Requests;
 using Keepa.NET_Core.Responses;
 using Newtonsoft.Json;
 using RestSharp;
@@ -23,7 +24,7 @@ namespace Keepa.NET_Core
 
             request.AddJsonBody(JsonConvert.SerializeObject(findProduct));
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<ProductFindResponse>(response.Content);
         }
@@ -36,7 +37,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("category", bestSellers.CategoryId);
             request.AddQueryParameter("range", bestSellers.Range);
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<BestSellersResponse>(response.Content);
         }
@@ -47,7 +48,7 @@ namespace Keepa.NET_Core
 
             request.AddQueryParameter("domain", mostRatedSellersRequest.DomainId);
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<MostRatedSellersResponse>(response.Content);
         }
@@ -67,7 +68,7 @@ namespace Keepa.NET_Core
                 request.AddQueryParameter("code", productRequest.Code);
             }
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<ProductResponse>(response.Content);
         }
@@ -80,7 +81,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("type", searchRequest.Type);
             request.AddQueryParameter("term", searchRequest.Term);
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<ProductResponse>(response.Content);
         }
@@ -93,7 +94,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("type", searchRequest.Type);
             request.AddQueryParameter("term", searchRequest.Term);
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<CategoryResponse>(response.Content);
         }
@@ -106,7 +107,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("category", categoryLookup.CategoryId);
             request.AddQueryParameter("parents", categoryLookup.IncludeParents);
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<CategoryResponse>(response.Content);
         }
@@ -118,7 +119,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("domain", sellerInfo.DomainId);
             request.AddQueryParameter("seller", sellerInfo.SellerId);
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<SellerInfoResponse>(response.Content);
         }
@@ -129,23 +130,32 @@ namespace Keepa.NET_Core
 
             request.AddJsonBody(JsonConvert.SerializeObject(deal));
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
-            return JsonConvert.DeserializeObject<DealResponse>(response.Content);
+            var dealsResponse = JsonConvert.DeserializeObject<DealResponse>(response.Content);
+
+            return dealsResponse;
         }
 
         public RetrieveTokenStatusResponse FetchTokenStatus()
         {
             RestRequest request = new RestRequest("token", Method.POST, DataFormat.Json);
 
-            var response = ExecuteRequest(request);
+            var response = Execute(request);
 
             return JsonConvert.DeserializeObject<RetrieveTokenStatusResponse>(response.Content);
         }
 
-        private IRestResponse ExecuteRequest(RestRequest request)
+        private IRestResponse Execute(RestRequest request)
         {
-            return _restClient.Execute(request);
+            IRestResponse response = _restClient.Execute(request);
+
+            if (response.IsSuccessful == false)
+            {
+                var error = JsonConvert.DeserializeObject<ResponseBase>(response.Content).Error;
+                throw new KeepaException(error);
+            }
+            return response;
         }
     }
 }
