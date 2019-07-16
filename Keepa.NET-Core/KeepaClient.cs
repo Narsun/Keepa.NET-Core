@@ -24,9 +24,9 @@ namespace Keepa.NET_Core
 
             request.AddJsonBody(JsonConvert.SerializeObject(findProduct));
 
-            var response = Execute(request);
+            var response = GetResponse<ProductFindResponse>(request);
 
-            return JsonConvert.DeserializeObject<ProductFindResponse>(response.Content);
+            return response;
         }
 
         public BestSellersResponse FetchBestSellers(BestSellersRequest bestSellers)
@@ -37,9 +37,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("category", bestSellers.CategoryId);
             request.AddQueryParameter("range", bestSellers.Range);
 
-            var response = Execute(request);
-
-            return JsonConvert.DeserializeObject<BestSellersResponse>(response.Content);
+            return GetResponse<BestSellersResponse>(request);
         }
 
         public MostRatedSellersResponse FetchMostRatedSellers(MostRatedSellersRequest mostRatedSellersRequest)
@@ -48,9 +46,7 @@ namespace Keepa.NET_Core
 
             request.AddQueryParameter("domain", mostRatedSellersRequest.DomainId);
 
-            var response = Execute(request);
-
-            return JsonConvert.DeserializeObject<MostRatedSellersResponse>(response.Content);
+            return GetResponse<MostRatedSellersResponse>(request);
         }
 
         public ProductResponse FetchProduct(ProductRequest productRequest)
@@ -68,9 +64,7 @@ namespace Keepa.NET_Core
                 request.AddQueryParameter("code", productRequest.Code);
             }
 
-            var response = Execute(request);
-
-            return JsonConvert.DeserializeObject<ProductResponse>(response.Content);
+            return GetResponse<ProductResponse>(request);
         }
 
         public ProductResponse ProductSearch(SearchRequest searchRequest)
@@ -81,9 +75,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("type", searchRequest.Type);
             request.AddQueryParameter("term", searchRequest.Term);
 
-            var response = Execute(request);
-
-            return JsonConvert.DeserializeObject<ProductResponse>(response.Content);
+            return GetResponse<ProductResponse>(request);
         }
 
         public CategoryResponse CategorySearch(SearchRequest searchRequest)
@@ -94,9 +86,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("type", searchRequest.Type);
             request.AddQueryParameter("term", searchRequest.Term);
 
-            var response = Execute(request);
-
-            return JsonConvert.DeserializeObject<CategoryResponse>(response.Content);
+            return GetResponse<CategoryResponse>(request);
         }
 
         public CategoryResponse CategoryLookup(CategoryLookupRequest categoryLookup)
@@ -107,9 +97,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("category", categoryLookup.CategoryId);
             request.AddQueryParameter("parents", categoryLookup.IncludeParents);
 
-            var response = Execute(request);
-
-            return JsonConvert.DeserializeObject<CategoryResponse>(response.Content);
+            return GetResponse<CategoryResponse>(request);
         }
 
         public SellerInfoResponse FetchSellerInfo(SellerInfoRequest sellerInfo)
@@ -119,9 +107,7 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("domain", sellerInfo.DomainId);
             request.AddQueryParameter("seller", sellerInfo.SellerId);
 
-            var response = Execute(request);
-
-            return JsonConvert.DeserializeObject<SellerInfoResponse>(response.Content);
+            return GetResponse<SellerInfoResponse>(request);
         }
 
         public DealResponse FetchDeals(DealRequest deal)
@@ -130,29 +116,29 @@ namespace Keepa.NET_Core
 
             request.AddJsonBody(JsonConvert.SerializeObject(deal));
 
-            var response = Execute(request);
-
-            var dealsResponse = JsonConvert.DeserializeObject<DealResponse>(response.Content);
-
-            return dealsResponse;
+            return GetResponse<DealResponse>(request);
         }
 
         public RetrieveTokenStatusResponse FetchTokenStatus()
         {
             RestRequest request = new RestRequest("token", Method.POST, DataFormat.Json);
 
-            var response = Execute(request);
-
-            return JsonConvert.DeserializeObject<RetrieveTokenStatusResponse>(response.Content);
+            return GetResponse<RetrieveTokenStatusResponse>(request);
         }
 
-        private IRestResponse Execute(RestRequest request)
+        private T GetResponse<T>(RestRequest request) where T : ResponseBase
         {
-            IRestResponse response = _restClient.Execute(request);
+            IRestResponse restResponse = _restClient.Execute(request);
 
-            if (response.IsSuccessful == false)
+            T response;
+
+            if (restResponse.IsSuccessful)
             {
-                var error = JsonConvert.DeserializeObject<ResponseBase>(response.Content).Error;
+                response = JsonConvert.DeserializeObject<T>(restResponse.Content);
+            }
+            else
+            {
+                var error = JsonConvert.DeserializeObject<ResponseBase>(restResponse.Content).Error;
                 throw new KeepaException(error);
             }
             return response;
