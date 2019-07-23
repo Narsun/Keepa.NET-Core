@@ -6,7 +6,7 @@ using RestSharp;
 
 namespace Keepa.NET_Core
 {
-    public class KeepaClient
+    public class KeepaClient : IKeepaClient
     {
         private readonly RestClient _restClient;
 
@@ -18,103 +18,134 @@ namespace Keepa.NET_Core
             _restClient.AddDefaultQueryParameter("key", privateKey);
         }
 
-        public ProductFindResponse FindProduct(ProductFindRequest findProduct)
+        public ProductFindResponse FindProduct(ProductFindRequest requestModel)
         {
             RestRequest request = new RestRequest("query", Method.POST, DataFormat.Json);
 
-            request.AddJsonBody(JsonConvert.SerializeObject(findProduct));
+            request.AddJsonBody(JsonConvert.SerializeObject(requestModel));
 
             var response = GetResponse<ProductFindResponse>(request);
 
             return response;
         }
 
-        public BestSellersResponse FetchBestSellers(BestSellersRequest bestSellers)
+        public BestSellersResponse FetchBestSellers(BestSellersRequest requestModel)
         {
             RestRequest request = new RestRequest("bestsellers", Method.POST, DataFormat.Json);
 
-            request.AddQueryParameter("domain", bestSellers.DomainId);
-            request.AddQueryParameter("category", bestSellers.CategoryId);
-            request.AddQueryParameter("range", bestSellers.Range);
+            request.AddQueryParameter("domain", requestModel.DomainId);
+            request.AddQueryParameter("category", requestModel.CategoryId);
+            request.AddQueryParameter("range", requestModel.Range);
 
             return GetResponse<BestSellersResponse>(request);
         }
 
-        public MostRatedSellersResponse FetchMostRatedSellers(MostRatedSellersRequest mostRatedSellersRequest)
+        public MostRatedSellersResponse FetchMostRatedSellers(MostRatedSellersRequest requestModel)
         {
             RestRequest request = new RestRequest("topseller", Method.POST, DataFormat.Json);
 
-            request.AddQueryParameter("domain", mostRatedSellersRequest.DomainId);
+            request.AddQueryParameter("domain", requestModel.DomainId);
 
             return GetResponse<MostRatedSellersResponse>(request);
         }
 
-        public ProductResponse FetchProduct(ProductRequest productRequest)
+        public ProductResponse FetchProduct(ProductRequest requestModel)
         {
             RestRequest request = new RestRequest("product", Method.POST, DataFormat.Json);
 
-            request.AddQueryParameter("domain", productRequest.DomainId);
+            request.AddQueryParameter("domain", requestModel.DomainId.ToString());
 
-            if (productRequest.Asin != null)
+            if (requestModel.Asin != null)
             {
-                request.AddQueryParameter("asin", productRequest.Asin);
+                request.AddQueryParameter("asin", requestModel.Asin);
             }
-            if (productRequest.Code != null)
+            if (requestModel.Code != null)
             {
-                request.AddQueryParameter("code", productRequest.Code);
+                request.AddQueryParameter("code", requestModel.Code);
+            }
+            /*
+            if (!string.IsNullOrEmpty(requestModel.Stats))
+            {
+                request.AddQueryParameter("stats", requestModel.Stats);
+            }
+            */
+            if (requestModel.Update > 0)
+            {
+                request.AddQueryParameter("update", requestModel.Update.ToString());
+            }
+            
+            if (requestModel.History > 0)
+            {
+                request.AddQueryParameter("history", requestModel.History.ToString());
+            }
+            if (requestModel.Offers > 0)
+            {
+                request.AddQueryParameter("offers", requestModel.Offers.ToString());
+            }
+            if (requestModel.Rental > 0)
+            {
+                request.AddQueryParameter("rental", requestModel.Rental.ToString());
+            }
+            if (requestModel.FbaFees > 0)
+            {
+                request.AddQueryParameter("fbafees", requestModel.FbaFees.ToString());
+            }
+            if (requestModel.Rating > 0)
+            {
+                request.AddQueryParameter("rating", requestModel.Rating.ToString());
             }
 
             return GetResponse<ProductResponse>(request);
         }
 
-        public ProductResponse ProductSearch(SearchRequest searchRequest)
+        public ProductResponse ProductSearch(SearchRequest requestModel)
         {
             RestRequest request = new RestRequest("search", Method.POST, DataFormat.Json);
 
-            request.AddQueryParameter("domain", searchRequest.DomainId);
-            request.AddQueryParameter("type", searchRequest.Type);
-            request.AddQueryParameter("term", searchRequest.Term);
+            request.AddQueryParameter("domain", requestModel.DomainId);
+            request.AddQueryParameter("type", requestModel.Type);
+            request.AddQueryParameter("term", requestModel.Term);
 
             return GetResponse<ProductResponse>(request);
         }
 
-        public CategoryResponse CategorySearch(SearchRequest searchRequest)
+        public CategoryResponse CategorySearch(SearchRequest requestModel)
         {
             RestRequest request = new RestRequest("search", Method.POST, DataFormat.Json);
 
-            request.AddQueryParameter("domain", searchRequest.DomainId);
-            request.AddQueryParameter("type", searchRequest.Type);
-            request.AddQueryParameter("term", searchRequest.Term);
+            request.AddQueryParameter("domain", requestModel.DomainId);
+            request.AddQueryParameter("type", requestModel.Type);
+            request.AddQueryParameter("term", requestModel.Term);
 
             return GetResponse<CategoryResponse>(request);
         }
 
-        public CategoryResponse CategoryLookup(CategoryLookupRequest categoryLookup)
+        public CategoryResponse CategoryLookup(CategoryLookupRequest requestModel)
         {
             RestRequest request = new RestRequest("category", Method.POST, DataFormat.Json);
 
-            request.AddQueryParameter("domain", categoryLookup.DomainId);
-            request.AddQueryParameter("category", categoryLookup.CategoryId);
-            request.AddQueryParameter("parents", categoryLookup.IncludeParents);
+            request.AddQueryParameter("domain", requestModel.DomainId);
+            request.AddQueryParameter("category", requestModel.CategoryId);
+            request.AddQueryParameter("parents", requestModel.IncludeParents);
 
             return GetResponse<CategoryResponse>(request);
         }
 
-        public SellerInfoResponse FetchSellerInfo(SellerInfoRequest sellerInfo)
+        public SellerInfoResponse FetchSellerInfo(SellerInfoRequest requestModel)
         {
             RestRequest request = new RestRequest("seller", Method.POST, DataFormat.Json);
 
-            request.AddQueryParameter("domain", sellerInfo.DomainId);
-            request.AddQueryParameter("seller", sellerInfo.SellerId);
+            request.AddQueryParameter("domain", requestModel.DomainId);
+            request.AddQueryParameter("seller", requestModel.SellerId);
 
             return GetResponse<SellerInfoResponse>(request);
         }
 
-        public DealResponse FetchDeals(DealRequest deal)
+        public DealResponse FetchDeals(DealRequest requestModel)
         {
             RestRequest request = new RestRequest("deal", Method.POST, DataFormat.Json);
 
-            request.AddJsonBody(JsonConvert.SerializeObject(deal));
+            request.AddJsonBody(JsonConvert.SerializeObject(requestModel));
 
             return GetResponse<DealResponse>(request);
         }
