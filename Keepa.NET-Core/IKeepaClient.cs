@@ -1,5 +1,7 @@
-﻿using Keepa.NET_Core.Requests;
+﻿using Keepa.NET_Core.Entities;
+using Keepa.NET_Core.Requests;
 using Keepa.NET_Core.Responses;
+using System.Collections.Generic;
 
 namespace Keepa.NET_Core
 {
@@ -11,7 +13,7 @@ namespace Keepa.NET_Core
 
         MostRatedSellersResponse FetchMostRatedSellers(MostRatedSellersRequest requestModel);
 
-        ProductResponse FetchProduct(ProductRequest requestModel);
+        Product[] FetchProducts(ProductRequest requestModel);
 
         ProductResponse ProductSearch(SearchRequest requestModel);
 
@@ -19,9 +21,9 @@ namespace Keepa.NET_Core
 
         CategoryResponse CategoryLookup(CategoryLookupRequest requestModel);
 
-        SellerInfoResponse FetchSellerInfo(SellerInfoRequest requestModel);
+        Dictionary<string, Seller> FetchSellerInfo(SellerInfoRequest requestModel);
 
-        DealResponse FetchDeals(DealRequest requestModel);
+        Deal[] FetchDeals(DealRequest requestModel);
 
         RetrieveTokenStatusResponse FetchTokenStatus();
     }

@@ -3,14 +3,14 @@
     public class ProductRequest
     {
         public int DomainId { get; set; }
-        public string Asin { get; set; }
-        public string Code { get; set; }
-        public string Stats { get; set; }
-        public uint Update { get; set; }
-        public int History { get; set; }
-        public int Offers { get; set; }
-        public int Rental { get; set; }
-        public int FbaFees { get; set; }
-        public int Rating { get; set; }
+        public string Asin { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public string Stats { get; set; } = string.Empty;
+        public uint Update { get; set; } = 0;
+        public int History { get; set; } = 0;
+        public int Offers { get; set; } = 0;
+        public int Rental { get; set; } = 0;
+        public int FbaFees { get; set; } = 0;
+        public int Rating { get; set; } = 0;
     }
 }

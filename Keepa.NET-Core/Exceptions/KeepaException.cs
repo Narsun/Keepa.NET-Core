@@ -11,5 +11,9 @@ namespace Keepa.NET_Core.Exceptions
         {
             Details = error.Details;
         }
+
+        public KeepaException(string message) : base (message)
+        {
+        }
     }
 }
