@@ -8,23 +8,15 @@ namespace Keepa.NET_Core
     internal interface IKeepaClient
     {
         ProductFindResponse FindProduct(ProductFindRequest requestModel);
-
         BestSellersResponse FetchBestSellers(BestSellersRequest requestModel);
-
         MostRatedSellersResponse FetchMostRatedSellers(MostRatedSellersRequest requestModel);
-
         Product[] FetchProducts(ProductRequest requestModel);
-
+        Product FetchProduct(ProductRequest requestModel);
         ProductResponse ProductSearch(SearchRequest requestModel);
-
         CategoryResponse CategorySearch(SearchRequest requestModel);
-
         CategoryResponse CategoryLookup(CategoryLookupRequest requestModel);
-
         Dictionary<string, Seller> FetchSellerInfo(SellerInfoRequest requestModel);
-
         Deal[] FetchDeals(DealRequest requestModel);
-
         RetrieveTokenStatusResponse FetchTokenStatus();
     }
 }

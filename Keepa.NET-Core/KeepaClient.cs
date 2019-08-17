@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 namespace Keepa.NET_Core
@@ -91,7 +92,7 @@ namespace Keepa.NET_Core
         {
             RestRequest request = new RestRequest("seller", Method.POST, DataFormat.Json);
 
-            request.AddQueryParameter("domain", requestModel.DomainId);
+            request.AddQueryParameter("domain", requestModel.DomainId.ToString());
             request.AddQueryParameter("seller", requestModel.SellerId);
             request.AddQueryParameter("storefront", requestModel.Storefront.ToString());
 
@@ -135,6 +136,43 @@ namespace Keepa.NET_Core
             ProductResponse response = GetResponse<ProductResponse>(request);
 
             return response.Products;
+        }
+
+        public Product FetchProduct(ProductRequest requestModel)
+        {
+            RestRequest request = new RestRequest("product", Method.POST, DataFormat.Json);
+
+            request.AddQueryParameter("domain", requestModel.DomainId.ToString());
+
+            if (!string.IsNullOrEmpty(requestModel.Asin))
+            {
+                request.AddQueryParameter("asin", requestModel.Asin);
+            }
+            if (!string.IsNullOrEmpty(requestModel.Code))
+            {
+                request.AddQueryParameter("code", requestModel.Code);
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.Stats))
+            {
+                request.AddQueryParameter("stats", requestModel.Stats);
+            }
+
+            request.AddQueryParameter("update", requestModel.Update.ToString());
+
+            request.AddQueryParameter("history", requestModel.History.ToString());
+
+            request.AddQueryParameter("offers", requestModel.Offers.ToString());
+
+            request.AddQueryParameter("rental", requestModel.Rental.ToString());
+
+            request.AddQueryParameter("fbafees", requestModel.FbaFees.ToString());
+
+            request.AddQueryParameter("rating", requestModel.Rating.ToString());
+
+            ProductResponse response = GetResponse<ProductResponse>(request);
+
+            return response.Products.First();
         }
 
         public Deal[] FetchDeals(DealRequest requestModel)
