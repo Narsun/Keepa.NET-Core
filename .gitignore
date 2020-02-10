@@ -260,3 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 /TestKeepa
+/LogService
+/amazonTask.docx

@@ -1,4 +1,4 @@
-﻿namespace Keepa.NET_Core.Entities
+﻿namespace Keepa.NET_Core.Contracts
 {
     public class FbaFees
     {

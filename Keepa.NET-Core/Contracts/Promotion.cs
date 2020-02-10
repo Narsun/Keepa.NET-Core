@@ -1,6 +1,6 @@
 ﻿using Keepa.NET_Core.Enums;
 
-namespace Keepa.NET_Core.Entities
+namespace Keepa.NET_Core.Contracts
 {
     public class Promotion
     {

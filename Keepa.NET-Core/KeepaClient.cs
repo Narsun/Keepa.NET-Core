@@ -1,41 +1,32 @@
-﻿using Keepa.NET_Core.Entities;
-using Keepa.NET_Core.Exceptions;
+﻿using Keepa.NET_Core.Exceptions;
 using Keepa.NET_Core.Requests;
 using Keepa.NET_Core.Responses;
-using LogService;
 using Newtonsoft.Json;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Keepa.NET_Core
 {
     public class KeepaClient : IKeepaClient
     {
         private readonly RestClient _restClient;
+        private const string _apiEndpoint = "https://api.keepa.com/";
 
-        private readonly string _apiUrl = "https://api.keepa.com/";
-
-        public KeepaClient(string privateKey)
+        public KeepaClient(string apiKey)
         {
-            _restClient = new RestClient(_apiUrl);
-            _restClient.AddDefaultQueryParameter("key", privateKey);
+            _restClient = new RestClient(_apiEndpoint);
+            _restClient.AddDefaultQueryParameter("key", apiKey);
         }
-
-        public ProductFindResponse FindProduct(ProductFindRequest requestModel)
+        public async Task<ProductFindResponse> FindProductAsync(ProductFindRequest requestModel)
         {
             RestRequest request = new RestRequest("query", Method.POST, DataFormat.Json);
 
             request.AddJsonBody(JsonConvert.SerializeObject(requestModel));
 
-            var response = GetResponse<ProductFindResponse>(request);
-
-            return response;
+            return await GetResponseAsync<ProductFindResponse>(request);
         }
-
-        public BestSellersResponse FetchBestSellers(BestSellersRequest requestModel)
+        public async Task<BestSellersResponse> FetchBestSellersAsync(BestSellersRequest requestModel)
         {
             RestRequest request = new RestRequest("bestsellers", Method.POST, DataFormat.Json);
 
@@ -43,19 +34,17 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("category", requestModel.CategoryId);
             request.AddQueryParameter("range", requestModel.Range);
 
-            return GetResponse<BestSellersResponse>(request);
+            return await GetResponseAsync<BestSellersResponse>(request);
         }
-
-        public MostRatedSellersResponse FetchMostRatedSellers(MostRatedSellersRequest requestModel)
+        public async Task<MostRatedSellersResponse> FetchMostRatedSellersAsync(MostRatedSellersRequest requestModel)
         {
             RestRequest request = new RestRequest("topseller", Method.POST, DataFormat.Json);
 
             request.AddQueryParameter("domain", requestModel.DomainId);
 
-            return GetResponse<MostRatedSellersResponse>(request);
+            return await GetResponseAsync<MostRatedSellersResponse>(request);
         }
-
-        public ProductResponse ProductSearch(SearchRequest requestModel)
+        public async Task<ProductResponse> ProductSearchAsync(SearchRequest requestModel)
         {
             RestRequest request = new RestRequest("search", Method.POST, DataFormat.Json);
 
@@ -63,10 +52,9 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("type", requestModel.Type);
             request.AddQueryParameter("term", requestModel.Term);
 
-            return GetResponse<ProductResponse>(request);
+            return await GetResponseAsync<ProductResponse>(request);
         }
-
-        public CategoryResponse CategorySearch(SearchRequest requestModel)
+        public async Task<CategoryResponse> CategorySearchAsync(SearchRequest requestModel)
         {
             RestRequest request = new RestRequest("search", Method.POST, DataFormat.Json);
 
@@ -74,10 +62,9 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("type", requestModel.Type);
             request.AddQueryParameter("term", requestModel.Term);
 
-            return GetResponse<CategoryResponse>(request);
+            return await GetResponseAsync<CategoryResponse>(request);
         }
-
-        public CategoryResponse CategoryLookup(CategoryLookupRequest requestModel)
+        public async Task<CategoryResponse> CategoryLookupAsync(CategoryLookupRequest requestModel)
         {
             RestRequest request = new RestRequest("category", Method.POST, DataFormat.Json);
 
@@ -85,10 +72,9 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("category", requestModel.CategoryId);
             request.AddQueryParameter("parents", requestModel.IncludeParents);
 
-            return GetResponse<CategoryResponse>(request);
+            return await GetResponseAsync<CategoryResponse>(request);
         }
-
-        public Dictionary<string, Seller> FetchSellerInfo(SellerInfoRequest requestModel)
+        public async Task<SellerInfoResponse> FetchSellersInfoAsync(SellerInfoRequest requestModel)
         {
             RestRequest request = new RestRequest("seller", Method.POST, DataFormat.Json);
 
@@ -96,12 +82,9 @@ namespace Keepa.NET_Core
             request.AddQueryParameter("seller", requestModel.SellerId);
             request.AddQueryParameter("storefront", requestModel.Storefront.ToString());
 
-            SellerInfoResponse response = GetResponse<SellerInfoResponse>(request);
-
-            return response.Sellers;
+            return await GetResponseAsync<SellerInfoResponse>(request);
         }
-
-        public Product[] FetchProducts(ProductRequest requestModel)
+        public async Task<ProductResponse> FetchProductsAsync(ProductRequest requestModel)
         {
             RestRequest request = new RestRequest("product", Method.POST, DataFormat.Json);
 
@@ -133,108 +116,45 @@ namespace Keepa.NET_Core
 
             request.AddQueryParameter("rating", requestModel.Rating.ToString());
 
-            ProductResponse response = GetResponse<ProductResponse>(request);
-
-            return response.Products;
+            return await GetResponseAsync<ProductResponse>(request);
         }
-
-        public Product FetchProduct(ProductRequest requestModel)
+        public async Task<DealResponse> FetchDealsAsync(DealRequest requestModel)
         {
-            RestRequest request = new RestRequest("product", Method.POST, DataFormat.Json);
-
-            request.AddQueryParameter("domain", requestModel.DomainId.ToString());
-
-            if (!string.IsNullOrEmpty(requestModel.Asin))
-            {
-                request.AddQueryParameter("asin", requestModel.Asin);
-            }
-            if (!string.IsNullOrEmpty(requestModel.Code))
-            {
-                request.AddQueryParameter("code", requestModel.Code);
-            }
-
-            if (!string.IsNullOrEmpty(requestModel.Stats))
-            {
-                request.AddQueryParameter("stats", requestModel.Stats);
-            }
-
-            request.AddQueryParameter("update", requestModel.Update.ToString());
-
-            request.AddQueryParameter("history", requestModel.History.ToString());
-
-            request.AddQueryParameter("offers", requestModel.Offers.ToString());
-
-            request.AddQueryParameter("rental", requestModel.Rental.ToString());
-
-            request.AddQueryParameter("fbafees", requestModel.FbaFees.ToString());
-
-            request.AddQueryParameter("rating", requestModel.Rating.ToString());
-
-            ProductResponse response = GetResponse<ProductResponse>(request);
-
-            return response.Products.First();
-        }
-
-        public Deal[] FetchDeals(DealRequest requestModel)
-        {
-            RestRequest request = new RestRequest("deal", Method.POST, DataFormat.Json);
+            var request = new RestRequest("deal", Method.POST, DataFormat.Json);
 
             request.AddJsonBody(JsonConvert.SerializeObject(requestModel));
 
-            DealResponse response = GetResponse<DealResponse>(request);
+            return  await GetResponseAsync<DealResponse>(request);
+        }
+        public async Task<RetrieveTokenStatusResponse> FetchTokenStatusAsync()
+        {
+            var request = new RestRequest("token", Method.POST, DataFormat.Json);
 
-            Deal[] deals = null;
+            return await GetResponseAsync<RetrieveTokenStatusResponse>(request);  
+        }
+        private async Task<IKeepaResponse> GetResponseAsync<IKeepaResponse>(RestRequest request)
+        {
+            var response = await _restClient.ExecuteAsync(request);
 
-            try
+            if (!string.IsNullOrEmpty(response.Content))
             {
-                if (response.Content != null)
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    deals = response.Content.Deals;
+                    var keepaResponse = JsonConvert.DeserializeObject<IKeepaResponse>(response.Content);
+
+                    return keepaResponse;
+                }
+                else if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 400)
+                {
+                    var errorResponse = JsonConvert.DeserializeObject<ResponseBase>(response.Content);
+
+                    if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                        throw new NotEnoughTokensException(errorResponse.Errors);
+                    else
+                        throw new KeepaException(errorResponse.Errors);
                 }
             }
-            catch (NullReferenceException ex)
-            {
-                Logger.Fatal(ex.Message);
-                Logger.Fatal($"Null reference response on DealRequest: page:{requestModel.Page}");
-            }
-
-            return deals;
-        }
-
-        public RetrieveTokenStatusResponse FetchTokenStatus()
-        {
-            RestRequest request = new RestRequest("token", Method.POST, DataFormat.Json);
-
-            return GetResponse<RetrieveTokenStatusResponse>(request);
-        }
-
-        private T GetResponse<T>(RestRequest request) where T : ResponseBase
-        {
-            IRestResponse restResponse = _restClient.Execute(request);
-
-            if (restResponse.StatusCode == HttpStatusCode.TooManyRequests)
-            {
-                throw new KeepaException("Not enough tokens.");
-            }
-
-            T response = JsonConvert.DeserializeObject<T>(restResponse.Content);
-
-            try
-            {
-                if (response.Error != null)
-                {
-                    Logger.Error($"RestResponseContent: {restResponse.Content}\nError: {response.Error.Message}");
-                    throw new KeepaException(response.Error.Message);
-                }
-
-                Logger.Info($"Tokens left: {response.TokensLeft}");
-            }
-            catch (NullReferenceException ex)
-            {
-                Logger.Fatal(ex.Message);
-                Logger.Fatal($"Null reference on response content: {restResponse.Content}");
-            }
-            return response;
+            throw new KeepaException("No content in response");
         }
     }
 }

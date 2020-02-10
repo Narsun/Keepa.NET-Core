@@ -1,19 +1,16 @@
-﻿using Keepa.NET_Core.Entities;
+﻿ using Keepa.NET_Core.Contracts;
 using System;
 
 namespace Keepa.NET_Core.Exceptions
 {
     public class KeepaException : Exception
     {
-        public string Details { get; set; }
-
-        public KeepaException(Error error) : base (error.Message, new Exception(error.Type))
+        public Error Errors { get; protected set; }
+        public KeepaException(Error errors) : base(errors.Message)
         {
-            Details = error.Details;
+            Errors = errors;
         }
 
-        public KeepaException(string message) : base (message)
-        {
-        }
+        public KeepaException(string message) : base(message) { }
     }
 }
